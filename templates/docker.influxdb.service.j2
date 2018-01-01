@@ -1,0 +1,16 @@
+[Unit]
+Description=Docker InfluxDB Container
+After=docker.service
+Requires=docker.service
+
+[Service]
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull {{influxdb_docker_image_name}}:{{influxdb_docker_image_version}}
+ExecStart=/usr/bin/docker run --init --name %n --env-file={{influxdb_etc_path}}/influxdb.env {{influxdb_docker_run_options}} {{influxdb_docker_image_name}}:{{influxdb_docker_image_version}}
+ExecStop=/usr/bin/docker stop %n
+TimeoutStartSec=0
+Restart={{influxdb_docker_restart_container}}
+
+[Install]
+WantedBy=multi-user.target

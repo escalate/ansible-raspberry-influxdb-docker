@@ -1,0 +1,19 @@
+---
+
+influxdb_docker_image_version: latest
+influxdb_docker_image_name: influxdb
+influxdb_docker_published_port: 8086
+influxdb_docker_run_options: "--publish={{influxdb_docker_published_port}}:8086 --volume={{influxdb_data_path}}:/var/lib/influxdb --volume={{influxdb_backup_path}}:/backup"
+influxdb_docker_restart_container: always
+
+influxdb_path: /opt/influxdb
+influxdb_backup_path: "{{influxdb_path}}/backup"
+influxdb_data_path: "{{influxdb_path}}/data"
+influxdb_etc_path: "{{influxdb_path}}/etc"
+
+influxdb_admin_users: []
+influxdb_config_env: []
+influxdb_databases: []
+influxdb_grants: []
+influxdb_retention_policies: []
+influxdb_users: []
