@@ -7,7 +7,7 @@ Requires=docker.service
 ExecStartPre=-/usr/bin/docker stop %n
 ExecStartPre=-/usr/bin/docker rm %n
 ExecStartPre=/usr/bin/docker pull {{influxdb_docker_image_name}}:{{influxdb_docker_image_version}}
-ExecStart=/usr/bin/docker run --init --name %n --env-file={{influxdb_etc_path}}/influxdb.env {{influxdb_docker_run_options}} {{influxdb_docker_image_name}}:{{influxdb_docker_image_version}}
+ExecStart=/usr/bin/docker run --init --name %n --env-file={{influxdb_etc_path}}/influxdb.env --publish={{influxdb_docker_published_port}}:8086 {{influxdb_docker_run_options}} {{influxdb_docker_image_name}}:{{influxdb_docker_image_version}}
 ExecStop=/usr/bin/docker stop %n
 TimeoutStartSec=0
 Restart={{influxdb_docker_restart_container}}
