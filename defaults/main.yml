@@ -17,3 +17,7 @@ influxdb_databases: []
 influxdb_grants: []
 influxdb_retention_policies: []
 influxdb_users: []
+
+influxdb_udp_sysctl:
+  - { name: 'net.core.rmem_max', value: '26214400' }
+  - { name: 'net.core.rmem_default', value: '26214400' }

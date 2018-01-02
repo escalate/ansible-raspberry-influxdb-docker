@@ -31,6 +31,16 @@
   tags:
     - influxdb
 
+- name: Set UDP/IP receive buffer size globally on host system
+  sysctl:
+    name: "{{item.name}}"
+    value: "{{item.value}}"
+    state: present
+  with_items: "{{influxdb_udp_sysctl}}"
+  when: "{'INFLUXDB_UDP_ENABLED': 'true'} in influxdb_config_env"
+  tags:
+    - influxdb
+
 - name: Create InfluxDB startup script
   template:
     src: docker.influxdb.service.j2
