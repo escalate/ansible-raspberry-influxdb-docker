@@ -67,12 +67,13 @@
 
 - name: Wait for InfluxDB service startup
   uri:
-    url: "http://localhost:{{influxdb_docker_published_port}}/ping"
+    url: "http://localhost:{{influxdb_docker_http_port}}/ping"
     status_code: 204
   register: result
   until: result.status == 204
   retries: 60
   delay: 5
+  when: influxdb_docker_publish_http_port
   tags:
     - influxdb
 

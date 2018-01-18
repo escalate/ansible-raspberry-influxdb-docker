@@ -2,7 +2,16 @@
 
 influxdb_docker_image_version: latest
 influxdb_docker_image_name: influxdb
-influxdb_docker_published_port: 8086
+influxdb_docker_publish_http_port: true
+influxdb_docker_publish_graphite_port: false
+influxdb_docker_publish_collectd_port: false
+influxdb_docker_publish_opentsdb_port: false
+influxdb_docker_publish_udp_port: false
+influxdb_docker_http_port: 8086
+influxdb_docker_graphite_port: 2003
+influxdb_docker_collectd_port: 25826
+influxdb_docker_opentsdb_port: 4242
+influxdb_docker_udp_port: 8089
 influxdb_docker_run_options: "--volume={{influxdb_data_path}}:/var/lib/influxdb --volume={{influxdb_backup_path}}:/backup"
 influxdb_docker_restart_container: always
 
