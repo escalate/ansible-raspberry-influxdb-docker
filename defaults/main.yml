@@ -17,6 +17,7 @@ influxdb_docker_restart_container: always
 
 influxdb_path: /opt/influxdb
 influxdb_backup_path: "{{influxdb_path}}/backup"
+influxdb_bin_path: "{{influxdb_path}}/bin"
 influxdb_data_path: "{{influxdb_path}}/data"
 influxdb_etc_path: "{{influxdb_path}}/etc"
 

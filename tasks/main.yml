@@ -7,6 +7,14 @@
   tags:
     - influxdb
 
+- name: Install dependencies
+  apt:
+    name: bsdutils
+    state: present
+    update_cache: yes
+  tags:
+    - influxdb
+
 - name: Create InfluxDB folder structure
   file:
     path: "{{item}}"
@@ -16,6 +24,7 @@
     mode: 0755
   with_items:
     - "{{influxdb_path}}"
+    - "{{influxdb_bin_path}}"
     - "{{influxdb_etc_path}}"
   tags:
     - influxdb
@@ -114,5 +123,26 @@
   args:
     stdin: "GRANT {{item.privilege}} ON {{item.database}} TO {{item.user}}"
   with_items: "{{influxdb_grants}}"
+  tags:
+    - influxdb
+
+- name: Create InfluxDB backup script
+  template:
+    src: backup_influxdb_database.sh.j2
+    dest: "{{influxdb_bin_path}}/backup_influxdb_database.sh"
+    owner: root
+    group: root
+    mode: 0755
+  tags:
+    - influxdb
+
+- name: Add cronjobs to backup InfluxDB databases
+  cron:
+    name: "Backup InfluxDB database {{item}}"
+    minute: "{{ 59 | random(step=10)}}"
+    hour: "4"
+    job: "{{influxdb_bin_path}}/backup_influxdb_database.sh \"{{item}}\" || echo \"ERROR: A problem occurred during backup of InfluxDB database '{{item}}'. Please check the logfiles.\""
+    user: root
+  with_items: "{{influxdb_databases}}"
   tags:
     - influxdb
