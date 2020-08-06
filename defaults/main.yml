@@ -1,5 +1,11 @@
 influxdb_docker_image_version: latest
 influxdb_docker_image_name: influxdb
+
+influxdb_backup_path: /var/backups/influxdb
+influxdb_bin_path: /usr/local/bin
+influxdb_data_path: /var/lib/influxdb
+influxdb_etc_path: /etc/influxdb
+
 influxdb_docker_publish_http_port: true
 influxdb_docker_publish_graphite_port: false
 influxdb_docker_publish_collectd_port: false
@@ -12,12 +18,6 @@ influxdb_docker_opentsdb_port: 4242
 influxdb_docker_udp_port: 8089
 influxdb_docker_run_options: "--volume={{influxdb_data_path}}:/var/lib/influxdb --volume={{influxdb_backup_path}}:/backup"
 influxdb_docker_restart_container: always
-
-influxdb_path: /opt/influxdb
-influxdb_backup_path: "{{influxdb_path}}/backup"
-influxdb_bin_path: "{{influxdb_path}}/bin"
-influxdb_data_path: "{{influxdb_path}}/data"
-influxdb_etc_path: "{{influxdb_path}}/etc"
 
 influxdb_admin_users: []
 influxdb_config_env: []

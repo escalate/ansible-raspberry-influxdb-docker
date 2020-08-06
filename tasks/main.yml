@@ -3,7 +3,7 @@
     file: armv7.yml
   when: ansible_architecture == 'armv7l'
 
-- name: Create InfluxDB folder structure
+- name: Create InfluxDB directory structure
   file:
     path: "{{item}}"
     state: directory
@@ -11,9 +11,9 @@
     group: root
     mode: 0755
   with_items:
-    - "{{influxdb_path}}"
-    - "{{influxdb_bin_path}}"
-    - "{{influxdb_etc_path}}"
+    - "{{ influxdb_backup_path }}"
+    - "{{ influxdb_data_path }}"
+    - "{{ influxdb_etc_path }}"
 
 - name: Configure InfluxDB
   template:
