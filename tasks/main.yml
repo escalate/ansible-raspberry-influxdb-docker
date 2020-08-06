@@ -39,9 +39,7 @@
     owner: root
     group: root
     mode: 0644
-  notify:
-    - Reload Systemd daemon
-    - Restart InfluxDB service
+  notify: Restart InfluxDB service
 
 - name: Force all notified handlers to run at this point
   meta: flush_handlers
