@@ -2,8 +2,6 @@
   include_vars:
     file: armv7.yml
   when: ansible_architecture == 'armv7l'
-  tags:
-    - influxdb
 
 - name: Create InfluxDB folder structure
   file:
@@ -16,8 +14,6 @@
     - "{{influxdb_path}}"
     - "{{influxdb_bin_path}}"
     - "{{influxdb_etc_path}}"
-  tags:
-    - influxdb
 
 - name: Configure InfluxDB
   template:
@@ -27,8 +23,6 @@
     group: root
     mode: 0644
   notify: Restart InfluxDB service
-  tags:
-    - influxdb
 
 - name: Set UDP/IP receive buffer size globally on host system
   sysctl:
@@ -37,8 +31,6 @@
     state: present
   with_items: "{{influxdb_udp_sysctl}}"
   when: "{'INFLUXDB_UDP_ENABLED': 'true'} in influxdb_config_env"
-  tags:
-    - influxdb
 
 - name: Create InfluxDB startup script
   template:
@@ -50,8 +42,6 @@
   notify:
     - Reload Systemd daemon
     - Restart InfluxDB service
-  tags:
-    - influxdb
 
 - name: Force all notified handlers to run at this point
   meta: flush_handlers
@@ -61,8 +51,6 @@
     name: docker.influxdb
     state: started
     enabled: true
-  tags:
-    - influxdb
 
 - name: Wait for InfluxDB service startup
   uri:
@@ -73,48 +61,36 @@
   retries: 60
   delay: 5
   when: influxdb_docker_publish_http_port
-  tags:
-    - influxdb
 
 - name: Add InfluxDB admins
   command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
   args:
     stdin: "CREATE USER {{item.user}} WITH PASSWORD '{{item.password}}' WITH ALL PRIVILEGES"
   with_items: "{{influxdb_admin_users}}"
-  tags:
-    - influxdb
 
 - name: Add InfluxDB users
   command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
   args:
     stdin: "CREATE USER {{item.user}} WITH PASSWORD '{{item.password}}'"
   with_items: "{{influxdb_users}}"
-  tags:
-    - influxdb
 
 - name: Add InfluxDB databases
   command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
   args:
     stdin: "CREATE DATABASE {{item}}"
   with_items: "{{influxdb_databases}}"
-  tags:
-    - influxdb
 
 - name: Add InfluxDB retention policies
   command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
   args:
     stdin: "CREATE RETENTION POLICY {{item.name}} ON {{item.database}} DURATION {{item.duration}} REPLICATION {{item.replication}} {{item.default}}"
   with_items: "{{influxdb_retention_policies}}"
-  tags:
-    - influxdb
 
 - name: Add InfluxDB grants
   command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
   args:
     stdin: "GRANT {{item.privilege}} ON {{item.database}} TO {{item.user}}"
   with_items: "{{influxdb_grants}}"
-  tags:
-    - influxdb
 
 - name: Create InfluxDB backup script
   template:
@@ -123,8 +99,6 @@
     owner: root
     group: root
     mode: 0755
-  tags:
-    - influxdb
 
 - name: Add cronjobs to backup InfluxDB databases
   cron:
@@ -134,5 +108,3 @@
     job: "{{influxdb_bin_path}}/backup_influxdb_database.sh \"{{item}}\" || echo \"ERROR: A problem occurred during backup of InfluxDB database '{{item}}'. Please check the logfiles.\""
     user: root
   with_items: "{{influxdb_databases}}"
-  tags:
-    - influxdb
