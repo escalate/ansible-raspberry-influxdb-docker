@@ -1,22 +1,18 @@
 galaxy_info:
   author: Felix Boerner
-  description: Manages InfluxDB Docker container with systemd on Raspbian and Debian OS
-  company: Felix Boerner
+  description: Manage InfluxDB 2.0 OSS Docker container
   license: MIT
-  min_ansible_version: 2.4
+  min_ansible_version: 2.9
   github_branch: master
   platforms:
     - name: Debian
       versions:
-        - jessie
-        - stretch
+        - buster
   galaxy_tags:
-    - raspbian
     - raspberry
     - pi
     - raspberrypi
     - docker
-    - systemd
+    - influx
     - influxdb
-    - influxdata
 dependencies: []
