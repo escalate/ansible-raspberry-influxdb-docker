@@ -35,6 +35,10 @@
         target: /var/lib/influxdb
         type: bind
 
+- name: Wait for InfluxDB to become available
+  wait_for:
+    port: 9999
+
 - name: Setup InfluxDB
   command: |
     docker exec -it influxdb \
