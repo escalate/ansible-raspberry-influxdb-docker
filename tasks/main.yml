@@ -1,108 +1,89 @@
-- name: Load InfluxDB settings for ARMv7 systems
-  include_vars:
-    file: armv7.yml
-  when: ansible_architecture == 'armv7l'
-
 - name: Create InfluxDB directory structure
   file:
-    path: "{{item}}"
+    path: "{{ item }}"
     state: directory
-    owner: root
-    group: root
+    owner: nobody
+    group: nogroup
     mode: 0755
   with_items:
     - "{{ influxdb_backup_path }}"
     - "{{ influxdb_data_path }}"
-    - "{{ influxdb_etc_path }}"
 
-- name: Configure InfluxDB
-  template:
-    src: influxdb.env.j2
-    dest: "{{influxdb_etc_path}}/influxdb.env"
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart InfluxDB service
+- name: Pull InfluxDB docker image
+  docker_image:
+    name: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
+    source: pull
 
-- name: Set UDP/IP receive buffer size globally on host system
-  sysctl:
-    name: "{{item.name}}"
-    value: "{{item.value}}"
-    state: present
-  with_items: "{{influxdb_udp_sysctl}}"
-  when: "{'INFLUXDB_UDP_ENABLED': 'true'} in influxdb_config_env"
-
-- name: Create InfluxDB startup script
-  template:
-    src: docker.influxdb.service.j2
-    dest: /etc/systemd/system/docker.influxdb.service
-    owner: root
-    group: root
-    mode: 0644
-  notify: Restart InfluxDB service
-
-- name: Force all notified handlers to run at this point
-  meta: flush_handlers
-
-- name: Start InfluxDB service
-  service:
-    name: docker.influxdb
+- name: Run InfluxDB docker container
+  docker_container:
+    name: influxdb
+    image: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     state: started
-    enabled: true
+    init: true
+    restart_policy: on-failure
+    restart_retries: 3
+    memory: "{{ influxdb_docker_memory }}"
+    user: nobody:nogroup
+    env: "{{ influxdb_config_env }}"
+    published_ports:
+      - 9999:9999
+    mounts:
+      - source: "{{ influxdb_backup_path }}"
+        target: /var/backups/influxdb
+        type: bind
+      - source: "{{ influxdb_data_path }}"
+        target: /var/lib/influxdb
+        type: bind
 
-- name: Wait for InfluxDB service startup
-  uri:
-    url: "http://localhost:{{influxdb_docker_http_port}}/ping"
-    status_code: 204
-  register: result
-  until: result.status == 204
-  retries: 60
-  delay: 5
-  when: influxdb_docker_publish_http_port
-
-- name: Add InfluxDB admins
-  command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
+- name: Setup InfluxDB
+  command: |
+    docker exec -it influxdb \
+    influx setup \
+    --username '{{ influxdb_primary_user_name }}' \
+    --password '{{ influxdb_primary_user_password }}' \
+    --org '{{ influxdb_primary_organization_name }}' \
+    --bucket '{{ influxdb_primary_bucket_name }}' \
+    --retention '{{ influxdb_primary_bucket_name_retention_period }}' \
+    --force
   args:
-    stdin: "CREATE USER {{item.user}} WITH PASSWORD '{{item.password}}' WITH ALL PRIVILEGES"
-  with_items: "{{influxdb_admin_users}}"
+    creates: "{{ influxdb_data_path }}/configs"
 
-- name: Add InfluxDB users
-  command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
-  args:
-    stdin: "CREATE USER {{item.user}} WITH PASSWORD '{{item.password}}'"
-  with_items: "{{influxdb_users}}"
+- name: Find InfluxDB users
+  command: |
+    docker exec -it influxdb \
+    influx user list \
+    --name '{{ item.name }}'
+  failed_when: false
+  changed_when: false
+  loop: "{{ influxdb_users }}"
+  register: found_users
 
-- name: Add InfluxDB databases
-  command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
-  args:
-    stdin: "CREATE DATABASE {{item}}"
-  with_items: "{{influxdb_databases}}"
+- name: Create InfluxDB users
+  command: |
+    docker exec -it influxdb \
+    influx user create \
+    --name '{{ item.0.name }}' \
+    --password '{{ item.0.password }}' \
+    --org '{{ influxdb_primary_organization_name }}'
+  when: item.1.rc != 0
+  loop: "{{ influxdb_users | zip(found_users.results) | list }}"
 
-- name: Add InfluxDB retention policies
-  command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
-  args:
-    stdin: "CREATE RETENTION POLICY {{item.name}} ON {{item.database}} DURATION {{item.duration}} REPLICATION {{item.replication}} {{item.default}}"
-  with_items: "{{influxdb_retention_policies}}"
+- name: Find InfluxDB buckets
+  command: |
+    docker exec -it influxdb \
+    influx bucket list \
+    --name '{{ item.name }}'
+  failed_when: false
+  changed_when: false
+  loop: "{{ influxdb_buckets }}"
+  register: found_buckets
 
-- name: Add InfluxDB grants
-  command: "docker exec -i docker.influxdb.service influx -username '{{influxdb_admin_users[0].user}}' -password '{{influxdb_admin_users[0].password}}'"
-  args:
-    stdin: "GRANT {{item.privilege}} ON {{item.database}} TO {{item.user}}"
-  with_items: "{{influxdb_grants}}"
-
-- name: Create InfluxDB backup script
-  template:
-    src: backup_influxdb_database.sh.j2
-    dest: "{{influxdb_bin_path}}/backup_influxdb_database.sh"
-    owner: root
-    group: root
-    mode: 0755
-
-- name: Add cronjobs to backup InfluxDB databases
-  cron:
-    name: "Backup InfluxDB database {{item}}"
-    minute: "{{ 59 | random(step=10)}}"
-    hour: "4"
-    job: "{{influxdb_bin_path}}/backup_influxdb_database.sh \"{{item}}\" || echo \"ERROR: A problem occurred during backup of InfluxDB database '{{item}}'. Please check the logfiles.\""
-    user: root
-  with_items: "{{influxdb_databases}}"
+- name: Create InfluxDB buckets
+  command: |
+    docker exec -it influxdb \
+    influx bucket create \
+    --name '{{ item.name }}' \
+    --description '{{ item.description }}' \
+    --org '{{ influxdb_primary_organization_name }}'
+    --retention '{{ item.retention }}'
+  loop: "{{ influxdb_buckets | zip(found_buckets.results) | list }}"

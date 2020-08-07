@@ -1,31 +1,27 @@
 influxdb_docker_image_name: quay.io/influxdb/influxdb
 influxdb_docker_image_version: 2.0.0-beta
+influxdb_docker_memory: 1G
 
 influxdb_backup_path: /var/backups/influxdb
-influxdb_bin_path: /usr/local/bin
 influxdb_data_path: /var/lib/influxdb
-influxdb_etc_path: /etc/influxdb
 
-influxdb_docker_publish_http_port: true
-influxdb_docker_publish_graphite_port: false
-influxdb_docker_publish_collectd_port: false
-influxdb_docker_publish_opentsdb_port: false
-influxdb_docker_publish_udp_port: false
-influxdb_docker_http_port: 8086
-influxdb_docker_graphite_port: 2003
-influxdb_docker_collectd_port: 25826
-influxdb_docker_opentsdb_port: 4242
-influxdb_docker_udp_port: 8089
-influxdb_docker_run_options: "--volume={{influxdb_data_path}}:/var/lib/influxdb --volume={{influxdb_backup_path}}:/backup"
-influxdb_docker_restart_container: always
+influxdb_config_env:
+  INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
+  INFLUX_PATH: "{{ influxdb_backup_path }}"
+  INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"
+  INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
+  INFLUXD_REPORTING_DISABLED: "true"
 
-influxdb_admin_users: []
-influxdb_config_env: []
-influxdb_databases: []
-influxdb_grants: []
-influxdb_retention_policies: []
+influxdb_primary_user_name: admin
+influxdb_primary_user_password: admin123
+influxdb_primary_organization_name: my-org
+influxdb_primary_bucket_name: my-bucket
+influxdb_primary_bucket_name_retention_period: 0
+
+influxdb_buckets: []
+  # - name: new-bucket
+  #   description: A new bucket
+  #   retention: 1h
 influxdb_users: []
-
-influxdb_udp_sysctl:
-  - {name: 'net.core.rmem_max', value: '26214400'}
-  - {name: 'net.core.rmem_default', value: '26214400'}
+  # - name: user1
+  #   password: pass1234

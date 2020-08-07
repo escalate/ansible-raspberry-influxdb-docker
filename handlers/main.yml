@@ -1,4 +1,0 @@
-- name: Restart InfluxDB service
-  service:
-    name: docker.influxdb
-    state: restarted
