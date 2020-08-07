@@ -87,3 +87,19 @@
     --org '{{ influxdb_primary_organization_name }}'
     --retention '{{ item.retention }}'
   loop: "{{ influxdb_buckets | zip(found_buckets.results) | list }}"
+
+- name: Create InfluxDB backup script
+  template:
+    src: backup_influxdb.sh.j2
+    dest: /usr/local/bin/backup_influxdb.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Add cronjob to backup InfluxDB
+  cron:
+    name: Backup InfluxDB
+    minute: "30"
+    hour: "4"
+    job: "/usr/local/bin/backup_influxdb.sh || echo \"ERROR: A problem occurred during backup of InfluxDB. Please check the logfiles. journalctl -t backup_influxdb.sh\""
+    user: root
