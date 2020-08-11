@@ -1,6 +1,6 @@
 galaxy_info:
   author: Felix Boerner
-  description: Manage InfluxDB 2.0 OSS Docker container
+  description: Manage InfluxDB OSS Docker container
   license: MIT
   min_ansible_version: 2.9
   github_branch: master
@@ -13,6 +13,6 @@ galaxy_info:
     - pi
     - raspberrypi
     - docker
-    - influx
     - influxdb
+    - influx
 dependencies: []

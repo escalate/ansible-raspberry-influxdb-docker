@@ -1,6 +1,6 @@
 # Ansible Role: influxdb-docker
 
-An Ansible role that manages InfluxDB 2.0 OSS Docker container on Raspberry Pi OS and Debian based systems.
+An Ansible role that manages InfluxDB OSS Docker container on Raspberry Pi OS and Debian based systems.
 
 ## Requirements
 
