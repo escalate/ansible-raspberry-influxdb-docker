@@ -36,8 +36,12 @@
         type: bind
 
 - name: Wait for InfluxDB to become available
-  wait_for:
-    port: 9999
+  uri:
+    url: http://localhost:9999
+  register: _result
+  until: _result.status == 200
+  retries: 60
+  delay: 1
 
 - name: Setup InfluxDB
   command: |
