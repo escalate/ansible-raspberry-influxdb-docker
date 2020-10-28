@@ -19,9 +19,12 @@
     name: influxdb
     image: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     state: started
+    container_default_behavior: no_defaults
+    detach: true
     init: true
     restart_policy: on-failure
     restart_retries: 3
+    auto_remove: yes
     memory: "{{ influxdb_docker_memory }}"
     user: nobody:nogroup
     env: "{{ influxdb_config_env }}"
