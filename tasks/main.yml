@@ -1,5 +1,5 @@
 - name: Create InfluxDB directory structure
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: nobody
@@ -10,12 +10,12 @@
     - "{{ influxdb_data_path }}"
 
 - name: Pull InfluxDB docker image
-  docker_image:
+  community.general.docker_image:
     name: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     source: pull
 
 - name: Run InfluxDB docker container
-  docker_container:
+  community.general.docker_container:
     name: influxdb
     image: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     state: started
@@ -24,7 +24,7 @@
     init: true
     restart_policy: on-failure
     restart_retries: 3
-    auto_remove: yes
+    auto_remove: true
     memory: "{{ influxdb_docker_memory }}"
     user: nobody:nogroup
     env: "{{ influxdb_config_env }}"
@@ -39,7 +39,7 @@
         type: bind
 
 - name: Wait for InfluxDB to become available
-  uri:
+  ansible.builtin.uri:
     url: http://localhost:9999
   register: _result
   until: _result.status == 200
@@ -47,7 +47,7 @@
   delay: 1
 
 - name: Setup InfluxDB
-  command: |
+  ansible.builtin.command: |
     docker exec -it influxdb \
     influx setup \
     --username '{{ influxdb_primary_user_name }}' \
@@ -60,7 +60,7 @@
     creates: "{{ influxdb_data_path }}/configs"
 
 - name: Find InfluxDB users
-  command: |
+  ansible.builtin.command: |
     docker exec -it influxdb \
     influx user list \
     --name '{{ item.name }}'
@@ -70,7 +70,7 @@
   register: found_users
 
 - name: Create InfluxDB users
-  command: |
+  ansible.builtin.command: |
     docker exec -it influxdb \
     influx user create \
     --name '{{ item.0.name }}' \
@@ -80,7 +80,7 @@
   loop: "{{ influxdb_users | zip(found_users.results) | list }}"
 
 - name: Find InfluxDB buckets
-  command: |
+  ansible.builtin.command: |
     docker exec -it influxdb \
     influx bucket list \
     --name '{{ item.name }}'
@@ -90,7 +90,7 @@
   register: found_buckets
 
 - name: Create InfluxDB buckets
-  command: |
+  ansible.builtin.command: |
     docker exec -it influxdb \
     influx bucket create \
     --name '{{ item.name }}' \
@@ -100,7 +100,7 @@
   loop: "{{ influxdb_buckets | zip(found_buckets.results) | list }}"
 
 - name: Create InfluxDB backup script
-  template:
+  ansible.builtin.template:
     src: backup_influxdb.sh.j2
     dest: /usr/local/bin/backup_influxdb.sh
     owner: root
@@ -108,9 +108,9 @@
     mode: 0755
 
 - name: Add cronjob to backup InfluxDB
-  cron:
+  ansible.builtin.cron:
     name: Backup InfluxDB
     minute: "30"
     hour: "4"
-    job: "/usr/local/bin/backup_influxdb.sh || echo \"ERROR: A problem occurred during backup of InfluxDB. Please check the logfiles. journalctl -t backup_influxdb.sh\""
+    job: "/usr/local/bin/backup_influxdb.sh || echo \"ERROR: A problem occurred during backup of InfluxDB. Please check the logfiles. journalctl -t backup_influxdb.sh\""  # noqa 204
     user: root
