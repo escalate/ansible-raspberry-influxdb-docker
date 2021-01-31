@@ -1,35 +1,32 @@
-# Ansible Role: influxdb-docker
+# Ansible Role: Raspberry - InfluxDB (Docker)
 
-An Ansible role that manages [InfluxDB](https://www.influxdata.com/products/influxdb-overview/) Docker container on Raspberry Pi OS and Debian based systems.
-
-## Requirements
-
-The Docker daemon should be already installed and running on the host side.
-I recommend using of the Ansible role [escalate.docker](https://github.com/escalate/ansible-docker) to manage the Docker daemon.
-
-This role is tested with Ansible version greater equal 2.9.
+An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/influxdb-overview/) Docker container with systemd on Raspberry Pi OS.
 
 ## Install
 
 ```
-$ ansible-galaxy install escalate.influxdb-docker
+$ ansible-galaxy install escalate.raspberry-influxdb-docker
 ```
 
 ## Role Variables
 
-Please see [defaults/main.yml](https://github.com/escalate/ansible-influxdb-docker/blob/master/defaults/main.yml) for a complete list of variables that can be overridden.
+Please see [defaults/main.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/defaults/main.yml) for a complete list of variables that can be overridden.
+
+## Dependencies
+
+This role relies on the following dependencies:
+
+* Roles: [requirements.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/requirements.yml)
+* Collections: None
 
 ## Example Playbook
 
 ```
 - hosts: all
   roles:
-    - escalate.influxdb-docker
+    - role: escalate.influxdb-docker
+      tags: influxdb
 ```
-
-## Dependencies
-
-None
 
 ## License
 
