@@ -1,0 +1,4 @@
+roles:
+  - name: docker
+    src: https://github.com/escalate/ansible-raspberry-docker.git
+    scm: git
