@@ -14,29 +14,21 @@
     name: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     source: pull
 
-- name: Run InfluxDB docker container
-  community.general.docker_container:
+- name: Create InfluxDB systemd service
+  ansible.builtin.template:
+    src: influxdb.service.j2
+    dest: /etc/systemd/system/influxdb.service
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart InfluxDB service
+
+- name: Start and enable InfluxDB service
+  ansible.builtin.systemd:
     name: influxdb
-    image: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
     state: started
-    container_default_behavior: no_defaults
-    detach: true
-    init: true
-    restart_policy: on-failure
-    restart_retries: 3
-    auto_remove: true
-    memory: "{{ influxdb_docker_memory }}"
-    user: nobody:nogroup
-    env: "{{ influxdb_config_env }}"
-    published_ports:
-      - 9999:9999
-    mounts:
-      - source: "{{ influxdb_backup_path }}"
-        target: /var/backups/influxdb
-        type: bind
-      - source: "{{ influxdb_data_path }}"
-        target: /var/lib/influxdb
-        type: bind
+    enabled: true
+    daemon_reload: true
 
 - name: Wait for InfluxDB to become available
   ansible.builtin.uri:

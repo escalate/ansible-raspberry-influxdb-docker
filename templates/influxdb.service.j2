@@ -1,0 +1,32 @@
+[Unit]
+Description=InfluxDB
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+ExecStartPre=-/usr/bin/docker stop %n
+ExecStartPre=-/usr/bin/docker rm %n
+ExecStartPre=/usr/bin/docker pull quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}
+ExecStart=/usr/bin/docker run \
+{% for config in influxdb_config_env %}
+--env={{ config }} \
+{% endfor %}
+--init \
+--memory={{ influxdb_docker_memory }} \
+--mount=type=bind,source={{ influxdb_backup_path }},destination=/var/backups/influxdb \
+--mount=type=bind,source={{ influxdb_data_path }},destination=/var/lib/influxdb \
+--name %n \
+--publish=9999:9999 \
+--user=nobody:nogroup \
+quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}
+ExecStop=/usr/bin/docker stop %n
+SyslogIdentifier=%n
+TimeoutStartSec=infinity
+StartLimitInterval=30
+StartLimitBurst=5
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
