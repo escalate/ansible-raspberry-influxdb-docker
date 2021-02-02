@@ -1,5 +1,4 @@
-influxdb_docker_image_name: quay.io/influxdb/influxdb
-influxdb_docker_image_version: 2.0.0-beta
+influxdb_docker_image_version: v2.0.3
 influxdb_docker_memory: 1G
 
 influxdb_backup_path: /var/backups/influxdb

@@ -11,7 +11,7 @@
 
 - name: Pull InfluxDB docker image
   community.general.docker_image:
-    name: "{{ influxdb_docker_image_name }}:{{ influxdb_docker_image_version }}"
+    name: "quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}"
     source: pull
 
 - name: Create InfluxDB systemd service
