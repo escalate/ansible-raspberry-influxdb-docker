@@ -1,0 +1,7 @@
+- name: Prepare
+  hosts: all
+  roles:
+    - role: common
+      tags: common
+    - role: docker
+      tags: docker
