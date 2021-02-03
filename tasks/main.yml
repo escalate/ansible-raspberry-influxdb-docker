@@ -2,8 +2,8 @@
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
-    owner: 65534
-    group: 65534
+    owner: nobody
+    group: nogroup
     mode: 0755
   with_items:
     - "{{ influxdb_backup_path }}"
