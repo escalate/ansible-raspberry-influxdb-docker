@@ -17,10 +17,10 @@ influxdb_primary_organization_name: my-org
 influxdb_primary_bucket_name: my-bucket
 influxdb_primary_bucket_name_retention_period: 0
 
+influxdb_users: []
+  # - name: user1
+  #   password: pass1234
 influxdb_buckets: []
   # - name: new-bucket
   #   description: A new bucket
   #   retention: 1h
-influxdb_users: []
-  # - name: user1
-  #   password: pass1234

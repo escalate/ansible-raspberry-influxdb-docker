@@ -1,5 +1,13 @@
 - name: Converge
   hosts: all
+  vars:
+    influxdb_users:
+      - name: user1
+        password: pass1234
+    influxdb_buckets:
+      - name: new-bucket
+        description: A new bucket
+        retention: 1h
   roles:
     - role: ansible-raspberry-influxdb-docker
       tags: influxdb
