@@ -32,7 +32,7 @@
 
 - name: Wait for InfluxDB to become available
   ansible.builtin.uri:
-    url: http://localhost:9999
+    url: http://localhost:8086
   register: result
   until: result.status == 200
   retries: 60
