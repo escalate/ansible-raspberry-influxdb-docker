@@ -85,10 +85,11 @@
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx bucket create \
-    --name '{{ item.name }}' \
-    --description '{{ item.description }}' \
-    --org '{{ influxdb_primary_organization_name }}'
-    --retention '{{ item.retention }}'
+    --name '{{ item.0.name }}' \
+    --description '{{ item.0.description }}' \
+    --org '{{ influxdb_primary_organization_name }}' \
+    --retention '{{ item.0.retention }}'
+  when: item.1.rc != 0
   loop: "{{ influxdb_buckets | zip(found_buckets.results) | list }}"
 
 - name: Create InfluxDB backup script
