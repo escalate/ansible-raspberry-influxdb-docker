@@ -40,7 +40,7 @@
 
 - name: Setup InfluxDB
   ansible.builtin.command: |
-    docker exec -it influxdb \
+    docker exec --interactive influxdb.service \
     influx setup \
     --username '{{ influxdb_primary_user_name }}' \
     --password '{{ influxdb_primary_user_password }}' \
@@ -53,7 +53,7 @@
 
 - name: Find InfluxDB users
   ansible.builtin.command: |
-    docker exec -it influxdb \
+    docker exec --interactive influxdb.service \
     influx user list \
     --name '{{ item.name }}'
   failed_when: false
@@ -63,7 +63,7 @@
 
 - name: Create InfluxDB users
   ansible.builtin.command: |
-    docker exec -it influxdb \
+    docker exec --interactive influxdb.service \
     influx user create \
     --name '{{ item.0.name }}' \
     --password '{{ item.0.password }}' \
@@ -73,7 +73,7 @@
 
 - name: Find InfluxDB buckets
   ansible.builtin.command: |
-    docker exec -it influxdb \
+    docker exec --interactive influxdb.service \
     influx bucket list \
     --name '{{ item.name }}'
   failed_when: false
@@ -83,7 +83,7 @@
 
 - name: Create InfluxDB buckets
   ansible.builtin.command: |
-    docker exec -it influxdb \
+    docker exec --interactive influxdb.service \
     influx bucket create \
     --name '{{ item.name }}' \
     --description '{{ item.description }}' \
