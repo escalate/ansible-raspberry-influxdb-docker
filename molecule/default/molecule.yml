@@ -9,6 +9,7 @@ driver:
 
 lint: |
   set -e
+  ec
   yamllint --strict -c .yamllint .
   ansible-lint -x 106,701 .
   flake8 --ignore=E501
