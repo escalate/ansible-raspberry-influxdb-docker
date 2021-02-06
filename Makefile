@@ -36,6 +36,7 @@ destroy:
 version:
 	ansible --version
 	molecule --version
+	ec --version
 	yamllint --version
 	ansible-lint --version
 	flake8 --version
