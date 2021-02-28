@@ -12,8 +12,8 @@ galaxy_info:
     - raspberry
     - pi
     - raspberrypi
-    - docker
     - systemd
+    - docker
     - influxdb
     - influx
 dependencies: []
