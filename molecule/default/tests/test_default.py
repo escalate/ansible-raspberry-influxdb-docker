@@ -4,7 +4,7 @@
 def test_backup_cron_job(host):
     """Check backup cron job"""
     cmd = "/usr/local/bin/backup_influxdb.sh"
-    f = host.file('/var/spool/cron/crontabs/root').content_string
+    f = host.file("/var/spool/cron/crontabs/root").content_string
     assert cmd in f
 
 
