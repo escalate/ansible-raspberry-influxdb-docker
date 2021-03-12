@@ -1,6 +1,6 @@
 # Ansible Role: Raspberry - InfluxDB (Docker)
 
-[![CI](https://github.com/escalate/ansible-raspberry-influxdb-docker/workflows/CI/badge.svg?event=push)](https://github.com/escalate/ansible-raspberry-influxdb-docker/actions?query=workflow%3ACI)
+[![CI](https://github.com/escalate/ansible-raspberry-influxdb-docker/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/escalate/ansible-raspberry-influxdb-docker/actions/workflows/ci.yml)
 
 An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/influxdb-overview/) Docker container with systemd on Raspberry Pi OS.
 
