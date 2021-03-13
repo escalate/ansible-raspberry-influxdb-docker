@@ -26,7 +26,7 @@ This role relies on the following dependencies:
 ```
 - hosts: all
   roles:
-    - role: escalate.influxdb-docker
+    - role: escalate.raspberry-influxdb-docker
       tags: influxdb
 ```
 
