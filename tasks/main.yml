@@ -1,4 +1,4 @@
-- name: Create InfluxDB directory structure
+- name: Create directory structure
   ansible.builtin.file:
     path: "{{ item }}"
     state: directory
@@ -9,28 +9,28 @@
     - "{{ influxdb_backup_path }}"
     - "{{ influxdb_data_path }}"
 
-- name: Pull InfluxDB docker image
+- name: Pull Docker image
   community.general.docker_image:
     name: "quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}"
     source: pull
 
-- name: Create InfluxDB systemd service
+- name: Create systemd service
   ansible.builtin.template:
     src: influxdb.service.j2
     dest: /etc/systemd/system/influxdb.service
     owner: root
     group: root
     mode: 0644
-  notify: Restart InfluxDB service
+  notify: Restart service
 
-- name: Start and enable InfluxDB service
+- name: Start and enable service
   ansible.builtin.systemd:
     name: influxdb
     state: started
     enabled: true
     daemon_reload: true
 
-- name: Wait for InfluxDB to become available
+- name: Wait for service to become available
   ansible.builtin.uri:
     url: http://localhost:8086
   register: result
@@ -38,7 +38,7 @@
   retries: 60
   delay: 1
 
-- name: Setup InfluxDB
+- name: Configure service
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx setup \
@@ -51,17 +51,17 @@
   args:
     creates: "{{ influxdb_data_path }}/configs"
 
-- name: Find InfluxDB users
+- name: List users
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx user list \
     --name '{{ item.name }}'
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_users }}"
+  loop: "{{ influxdb_user_list }}"
   register: found_users
 
-- name: Create InfluxDB users
+- name: Create users
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx user create \
@@ -69,19 +69,19 @@
     --password '{{ item.0.password }}' \
     --org '{{ influxdb_primary_organization_name }}'
   when: item.1.rc != 0
-  loop: "{{ influxdb_users | zip(found_users.results) | list }}"
+  loop: "{{ influxdb_user_list | zip(found_users.results) | list }}"
 
-- name: Find InfluxDB buckets
+- name: List buckets
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx bucket list \
     --name '{{ item.name }}'
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_buckets }}"
+  loop: "{{ influxdb_bucket_list }}"
   register: found_buckets
 
-- name: Create InfluxDB buckets
+- name: Create buckets
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx bucket create \
@@ -90,9 +90,9 @@
     --org '{{ influxdb_primary_organization_name }}' \
     --retention '{{ item.0.retention }}'
   when: item.1.rc != 0
-  loop: "{{ influxdb_buckets | zip(found_buckets.results) | list }}"
+  loop: "{{ influxdb_bucket_list | zip(found_buckets.results) | list }}"
 
-- name: Create InfluxDB backup script
+- name: Create backup script
   ansible.builtin.template:
     src: backup_influxdb.sh.j2
     dest: /usr/local/bin/backup_influxdb.sh
@@ -100,7 +100,7 @@
     group: root
     mode: 0755
 
-- name: Add cronjob to backup InfluxDB
+- name: Add backup cron job
   ansible.builtin.cron:
     name: Backup InfluxDB
     minute: "30"
