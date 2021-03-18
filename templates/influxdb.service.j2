@@ -9,11 +9,9 @@ ExecStartPre=-/usr/bin/docker stop %n
 ExecStartPre=-/usr/bin/docker rm %n
 ExecStartPre=/usr/bin/docker pull quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}
 ExecStart=/usr/bin/docker run \
-{% for key, value in influxdb_config_env.items() %}
---env={{ key }}={{ value }} \
-{% endfor %}
 --init \
 --memory={{ influxdb_docker_memory }} \
+--env-file={{ influxdb_etc_path }}/influxdb.env \
 --mount=type=bind,source={{ influxdb_backup_path }},destination=/var/backups/influxdb \
 --mount=type=bind,source={{ influxdb_data_path }},destination=/var/lib/influxdb \
 --name %n \

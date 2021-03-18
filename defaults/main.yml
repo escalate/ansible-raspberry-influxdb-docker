@@ -3,6 +3,7 @@ influxdb_docker_memory: 1G
 
 influxdb_backup_path: /var/backups/influxdb
 influxdb_data_path: /var/lib/influxdb
+influxdb_etc_path: /etc/influxdb
 
 influxdb_config_env:
   INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
