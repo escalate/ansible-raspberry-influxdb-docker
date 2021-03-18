@@ -77,8 +77,8 @@
     --name '{{ item.name }}'
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_user_list }}"
-  register: found_users
+  loop: "{{ influxdb_users }}"
+  register: influxdb_user_list
 
 - name: Create users
   ansible.builtin.command: |
@@ -88,7 +88,7 @@
     --password '{{ item.0.password }}' \
     --org '{{ influxdb_primary_organization_name }}'
   when: item.1.rc != 0
-  loop: "{{ influxdb_user_list | zip(found_users.results) | list }}"
+  loop: "{{ influxdb_users | zip(influxdb_user_list.results) | list }}"
 
 - name: List buckets
   ansible.builtin.command: |
@@ -97,8 +97,8 @@
     --name '{{ item.name }}'
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_bucket_list }}"
-  register: found_buckets
+  loop: "{{ influxdb_buckets }}"
+  register: influxdb_bucket_list
 
 - name: Create buckets
   ansible.builtin.command: |
@@ -109,7 +109,7 @@
     --org '{{ influxdb_primary_organization_name }}' \
     --retention '{{ item.0.retention }}'
   when: item.1.rc != 0
-  loop: "{{ influxdb_bucket_list | zip(found_buckets.results) | list }}"
+  loop: "{{ influxdb_buckets | zip(influxdb_bucket_list.results) | list }}"
 
 - name: Create backup script
   ansible.builtin.template:
