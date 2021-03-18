@@ -1,5 +1,6 @@
 galaxy_info:
   role_name: raspberry_influxdb_docker
+  namespace: escalate
   author: Felix Boerner
   description: Manage InfluxDB OSS Docker container with systemd on Raspberry Pi OS
   license: MIT
