@@ -20,7 +20,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install editorconfig-checker
           sudo ln --symbolic "$(which editorconfig-checker)" /usr/local/bin/ec
-          python -m pip install molecule[docker,lint,test]
+          python -m pip install ansible molecule[docker,lint,test]
 
       - name: Run Molecule tests
         run: |
