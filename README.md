@@ -7,7 +7,7 @@ An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/
 ## Install
 
 ```
-$ ansible-galaxy install escalate.raspberry_influxdb_docker
+$ ansible-galaxy install escalate.influxdb
 ```
 
 ## Role Variables
@@ -26,7 +26,7 @@ This role relies on the following dependencies:
 ```
 - hosts: all
   roles:
-    - role: escalate.raspberry_influxdb_docker
+    - role: escalate.influxdb
       tags: influxdb
 ```
 
