@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/escalate/ansible-raspberry-influxdb-docker/actions/workflows/ci.yml/badge.svg?event=push)](https://github.com/escalate/ansible-raspberry-influxdb-docker/actions/workflows/ci.yml)
 
-An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/influxdb-overview/) Docker container with systemd on Raspberry Pi OS.
+An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/influxdb/) Docker container with systemd on Raspberry Pi OS.
 
 ## Install
 
