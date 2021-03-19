@@ -1,3 +1,7 @@
+# vim
 *.swp
+
+# molecule
 __pycache__/
-*.log
+pytestdebug.log
+.cache/
