@@ -18,5 +18,6 @@ def pytest_runtest_setup(item):
         ).get_hosts("all")
     else:
         pytest.skip(
-            "Test should run only from inside molecule.", allow_module_level=True
+            "Test should run only from inside molecule.",
+            allow_module_level=True
         )
