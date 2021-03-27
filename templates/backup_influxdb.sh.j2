@@ -3,5 +3,18 @@ set -e -E -u -C -o pipefail
 
 exec 1> >(logger -t $(basename $0)) 2>&1
 
-echo "Start backup of InfluxDB"
-docker exec --interactive influxdb.service influx backup
+echo "Start InfluxDB backup job"
+
+BACKUP_DIR="{{ influxdb_backup_path }}"
+
+echo "Start backup of InfluxDB database"
+docker exec --interactive influxdb.service influx backup /var/backups/influxdb
+
+echo "Compress backup of InfluxDB database"
+find "${BACKUP_DIR}" -name "*.bolt" -type f -exec bzip2 {} \;
+find "${BACKUP_DIR}" -name "*.manifest" -type f -exec bzip2 {} \;
+
+echo "Delete old InfluxDB database backups"
+find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +14 -delete
+
+echo "Finish InfluxDB backup job"

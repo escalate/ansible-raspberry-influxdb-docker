@@ -7,7 +7,6 @@ influxdb_etc_path: /etc/influxdb
 
 influxdb_config_env:
   INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
-  INFLUX_PATH: "{{ influxdb_backup_path }}"
   INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"
   INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
   INFLUXD_REPORTING_DISABLED: "true"
