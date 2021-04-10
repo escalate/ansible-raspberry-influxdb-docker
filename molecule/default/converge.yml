@@ -3,10 +3,12 @@
   vars:
     influxdb_docker_image_version: v2.0.4
     influxdb_docker_memory: 1G
+    influxdb_docker_labels:
+      maintainer: me@example.com
     influxdb_backup_path: /var/backups/influxdb
     influxdb_data_path: /var/lib/influxdb
     influxdb_etc_path: /etc/influxdb
-    influxdb_config_env:
+    influxdb_env_vars:
       INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
       INFLUX_PATH: "{{ influxdb_backup_path }}"
       INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"

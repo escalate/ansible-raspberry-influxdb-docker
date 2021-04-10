@@ -26,32 +26,20 @@ def test_writeable_directories(host, directory):
     assert f.mode == 0o755
 
 
-def test_influxdb_config(host):
-    """Check influxdb config file"""
-    f = host.file("/etc/influxdb/influxdb.env")
-    assert f.is_file
-    assert f.user == "root"
-    assert f.group == "root"
-
-    config = (
-                "INFLUX_CONFIGS_PATH=/var/lib/influxdb/configs\n"
-                "INFLUX_PATH=/var/backups/influxdb\n"
-                "INFLUXD_BOLT_PATH=/var/lib/influxdb/influxd.bolt\n"
-                "INFLUXD_ENGINE_PATH=/var/lib/influxdb/engine\n"
-                "INFLUXD_REPORTING_DISABLED=true\n"
-    )
-    assert config in f.content_string
-
-
 def test_influxdb_service(host):
     """Check influxdb service"""
-    f = host.file("/etc/systemd/system/influxdb.service")
-    assert "--memory=1G" in f.content_string
-    assert "quay.io/influxdb/influxdb:v2.0.4" in f.content_string
-
     s = host.service("influxdb")
     assert s.is_running
     assert s.is_enabled
+
+
+def test_influxdb_docker_container(host):
+    """Check influxdb docker container"""
+    d = host.docker("influxdb.service").inspect()
+    assert d["HostConfig"]["Memory"] == 1073741824
+    assert d["Config"]["Image"] == "quay.io/influxdb/influxdb:v2.0.4"
+    assert d["Config"]["Labels"] == {'maintainer': '"me@example.com"'}
+    assert "INFLUXD_REPORTING_DISABLED=true" in d["Config"]["Env"]
 
 
 def test_backup_cron_job(host):

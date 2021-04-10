@@ -19,10 +19,19 @@
     - "{{ influxdb_backup_path }}"
     - "{{ influxdb_data_path }}"
 
-- name: Create service configuration
+- name: Define environment variables
   ansible.builtin.template:
     src: influxdb.env.j2
     dest: "{{ influxdb_etc_path }}/influxdb.env"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart influxdb service
+
+- name: Define Docker container labels
+  ansible.builtin.template:
+    src: influxdb.label.j2
+    dest: "{{ influxdb_etc_path }}/influxdb.label"
     owner: root
     group: root
     mode: 0644
