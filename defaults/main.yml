@@ -12,7 +12,7 @@ influxdb_env_vars:
   INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
   INFLUXD_REPORTING_DISABLED: "true"
 
-influxdb_primary_user_name: admin
+influxdb_primary_user: admin
 influxdb_primary_user_password: admin123
 influxdb_primary_organization_name: my-org
 influxdb_primary_bucket_name: my-bucket

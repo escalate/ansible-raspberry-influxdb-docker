@@ -78,7 +78,7 @@
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx setup \
-    --username '{{ influxdb_primary_user_name }}' \
+    --username '{{ influxdb_primary_user }}' \
     --password '{{ influxdb_primary_user_password }}' \
     --org '{{ influxdb_primary_organization_name }}' \
     --bucket '{{ influxdb_primary_bucket_name }}' \
