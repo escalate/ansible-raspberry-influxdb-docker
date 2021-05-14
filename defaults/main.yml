@@ -1,4 +1,4 @@
-influxdb_docker_image_version: v2.0.4
+influxdb_docker_image_version: latest
 influxdb_docker_memory: 1G
 influxdb_docker_labels: {}
 

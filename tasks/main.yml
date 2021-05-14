@@ -8,16 +8,21 @@
   loop:
     - "{{ influxdb_etc_path }}"
 
-- name: Create writeable directories
+- name: Create writeable data directories
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ influxdb_data_path }}"
+    state: directory
+    owner: nobody
+    group: nogroup
+    mode: 0700
+
+- name: Create writeable backup directories
+  ansible.builtin.file:
+    path: "{{ influxdb_backup_path }}"
     state: directory
     owner: nobody
     group: nogroup
     mode: 0755
-  loop:
-    - "{{ influxdb_backup_path }}"
-    - "{{ influxdb_data_path }}"
 
 - name: Define environment variables
   ansible.builtin.template:
@@ -39,7 +44,7 @@
 
 - name: Pull Docker image
   community.general.docker_image:
-    name: "quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}"
+    name: "influxdb:{{ influxdb_docker_image_version }}"
     source: pull
 
 - name: Create systemd service

@@ -7,7 +7,7 @@ Requires=docker.service
 Type=simple
 ExecStartPre=-/usr/bin/docker stop %n
 ExecStartPre=-/usr/bin/docker rm %n
-ExecStartPre=/usr/bin/docker pull quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}
+ExecStartPre=/usr/bin/docker pull influxdb:{{ influxdb_docker_image_version }}
 ExecStart=/usr/bin/docker run \
 --init \
 --memory={{ influxdb_docker_memory }} \
@@ -18,7 +18,7 @@ ExecStart=/usr/bin/docker run \
 --name %n \
 --publish=8086:8086 \
 --user=nobody:nogroup \
-quay.io/influxdb/influxdb:{{ influxdb_docker_image_version }}
+influxdb:{{ influxdb_docker_image_version }}
 ExecStop=/usr/bin/docker stop %n
 SyslogIdentifier=%n
 TimeoutStartSec=infinity

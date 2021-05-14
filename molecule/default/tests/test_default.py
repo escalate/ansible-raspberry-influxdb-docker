@@ -1,9 +1,6 @@
 """Role testing files using testinfra"""
 
 
-import pytest
-
-
 def test_read_only_directories(host):
     """Check read-only directories"""
     f = host.file("/etc/influxdb")
@@ -13,17 +10,19 @@ def test_read_only_directories(host):
     assert f.mode == 0o755
 
 
-@pytest.mark.parametrize("directory", [
-    ("/var/backups/influxdb"),
-    ("/var/lib/influxdb")
-])
-def test_writeable_directories(host, directory):
+def test_writeable_directories(host):
     """Check writeable directories"""
-    f = host.file(directory)
-    assert f.is_directory
-    assert f.user == "nobody"
-    assert f.group == "nogroup"
-    assert f.mode == 0o755
+    d = host.file("/var/lib/influxdb")
+    assert d.is_directory
+    assert d.user == "nobody"
+    assert d.group == "nogroup"
+    assert d.mode == 0o700
+
+    b = host.file("/var/backups/influxdb")
+    assert b.is_directory
+    assert b.user == "nobody"
+    assert b.group == "nogroup"
+    assert b.mode == 0o755
 
 
 def test_influxdb_service(host):
@@ -37,7 +36,7 @@ def test_influxdb_docker_container(host):
     """Check influxdb docker container"""
     d = host.docker("influxdb.service").inspect()
     assert d["HostConfig"]["Memory"] == 1073741824
-    assert d["Config"]["Image"] == "quay.io/influxdb/influxdb:v2.0.4"
+    assert d["Config"]["Image"] == "influxdb:latest"
     assert d["Config"]["Labels"]["maintainer"] == '"me@example.com"'
     assert "INFLUXD_REPORTING_DISABLED=true" in d["Config"]["Env"]
 
