@@ -37,7 +37,7 @@ def test_influxdb_docker_container(host):
     d = host.docker("influxdb.service").inspect()
     assert d["HostConfig"]["Memory"] == 1073741824
     assert d["Config"]["Image"] == "influxdb:latest"
-    assert d["Config"]["Labels"]["maintainer"] == '"me@example.com"'
+    assert d["Config"]["Labels"]["maintainer"] == "me@example.com"
     assert "INFLUXD_REPORTING_DISABLED=true" in d["Config"]["Env"]
 
 
