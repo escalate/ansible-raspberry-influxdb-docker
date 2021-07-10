@@ -51,7 +51,7 @@
   notify: Restart influxdb service
 
 - name: Pull Docker image
-  community.general.docker_image:
+  community.docker.docker_image:
     name: "influxdb:{{ influxdb_docker_image_version }}"
     source: pull
 
