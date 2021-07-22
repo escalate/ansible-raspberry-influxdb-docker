@@ -22,7 +22,7 @@ ExecStart=/usr/bin/docker run \
 --mount=type=bind,source={{ influxdb_data_path }},destination=/var/lib/influxdb \
 --network={{ influxdb_docker_network }} \
 --network-alias=influxdb \
---publish={{ influxdb_bind_address }}:8086:8086 \
+--publish=127.0.0.1:8086:8086 \
 --user=nobody:nogroup \
 influxdb:{{ influxdb_docker_image_version }}
 ExecStop=/usr/bin/docker stop %n

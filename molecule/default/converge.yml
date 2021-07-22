@@ -9,7 +9,6 @@
     influxdb_backup_path: /var/backups/influxdb
     influxdb_data_path: /var/lib/influxdb
     influxdb_etc_path: /etc/influxdb
-    influxdb_bind_address: 127.0.0.1
     influxdb_env_vars:
       INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
       INFLUX_PATH: "{{ influxdb_backup_path }}"
