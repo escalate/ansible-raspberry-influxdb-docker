@@ -10,10 +10,6 @@
     influxdb_data_path: /var/lib/influxdb
     influxdb_etc_path: /etc/influxdb
     influxdb_env_vars:
-      INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
-      INFLUX_PATH: "{{ influxdb_backup_path }}"
-      INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"
-      INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
       INFLUXD_REPORTING_DISABLED: "true"
     influxdb_primary_user: admin
     influxdb_primary_user_password: admin123

@@ -8,7 +8,7 @@ echo "Start InfluxDB backup job"
 BACKUP_DIR="{{ influxdb_backup_path }}"
 
 echo "Start backup of InfluxDB database"
-docker exec --interactive influxdb.service influx backup /var/backups/influxdb
+docker exec --interactive influxdb.service influx backup /var/backups/influxdb2
 
 echo "Compress backup of InfluxDB database"
 find "${BACKUP_DIR}" -name "*.bolt" -type f -exec bzip2 {} \;

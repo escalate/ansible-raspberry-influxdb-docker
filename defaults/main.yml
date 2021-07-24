@@ -9,9 +9,6 @@ influxdb_etc_path: /etc/influxdb
 
 # https://docs.influxdata.com/influxdb/v2.0/reference/config-options/
 influxdb_env_vars:
-  INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
-  INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"
-  INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
   INFLUXD_REPORTING_DISABLED: "true"
 
 # Replaces env var DOCKER_INFLUXDB_INIT_USERNAME

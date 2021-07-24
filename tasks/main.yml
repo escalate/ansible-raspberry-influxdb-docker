@@ -1,12 +1,10 @@
 - name: Create read-only directories
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "{{ influxdb_etc_path }}"
     state: directory
     owner: root
     group: root
-    mode: 0755
-  loop:
-    - "{{ influxdb_etc_path }}"
+    mode: 0775  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L74
 
 - name: Create writeable data directories
   ansible.builtin.file:
@@ -93,7 +91,7 @@
     --retention '{{ influxdb_primary_bucket_name_retention_period }}' \
     --force
   args:
-    creates: "{{ influxdb_data_path }}/configs"
+    creates: "{{ influxdb_etc_path }}/influx-configs"
 
 - name: List users
   ansible.builtin.command: |

@@ -18,8 +18,9 @@ ExecStart=/usr/bin/docker run \
 {% if influxdb_docker_labels | dict2items | length > 0 %}
 --label-file={{ influxdb_etc_path }}/influxdb.label \
 {% endif %}
---mount=type=bind,source={{ influxdb_backup_path }},destination=/var/backups/influxdb \
---mount=type=bind,source={{ influxdb_data_path }},destination=/var/lib/influxdb \
+--mount=type=bind,source={{ influxdb_backup_path }},destination=/var/backups/influxdb2 \
+--mount=type=bind,source={{ influxdb_data_path }},destination=/var/lib/influxdb2 \
+--mount=type=bind,source={{ influxdb_etc_path }},destination=/etc/influxdb2 \
 --network={{ influxdb_docker_network }} \
 --network-alias=influxdb \
 --publish=127.0.0.1:8086:8086 \
