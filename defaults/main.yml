@@ -7,21 +7,30 @@ influxdb_backup_path: /var/backups/influxdb
 influxdb_data_path: /var/lib/influxdb
 influxdb_etc_path: /etc/influxdb
 
+# https://docs.influxdata.com/influxdb/v2.0/reference/config-options/
 influxdb_env_vars:
   INFLUX_CONFIGS_PATH: "{{ influxdb_data_path }}/configs"
   INFLUXD_BOLT_PATH: "{{ influxdb_data_path }}/influxd.bolt"
   INFLUXD_ENGINE_PATH: "{{ influxdb_data_path }}/engine"
   INFLUXD_REPORTING_DISABLED: "true"
 
+# Replaces env var DOCKER_INFLUXDB_INIT_USERNAME
 influxdb_primary_user: admin
+# Replaces env var DOCKER_INFLUXDB_INIT_PASSWORD
 influxdb_primary_user_password: admin123
+# Replaces env var DOCKER_INFLUXDB_INIT_ORG
 influxdb_primary_organization_name: my-org
+# Replaces env var DOCKER_INFLUXDB_INIT_BUCKET
 influxdb_primary_bucket_name: my-bucket
+# Replaces env var DOCKER_INFLUXDB_INIT_RETENTION
 influxdb_primary_bucket_name_retention_period: 0
 
+# https://docs.influxdata.com/influxdb/v2.0/users/create-user/
 influxdb_users: []
   # - name: user1
   #   password: pass1234
+
+# https://docs.influxdata.com/influxdb/v2.0/organizations/buckets/create-bucket/
 influxdb_buckets: []
   # - name: new-bucket
   #   description: A new bucket
