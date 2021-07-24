@@ -1,26 +1,34 @@
-- name: Create read-only directories
+- name: Create application user
+  ansible.builtin.user:
+    name: influxdb
+    uid: 10300
+    group: root
+    create_home: false
+    shell: /sbin/nologin
+
+- name: Create config directory
   ansible.builtin.file:
     path: "{{ influxdb_etc_path }}"
     state: directory
-    owner: root
+    owner: influxdb
     group: root
     mode: 0775  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L74
 
-- name: Create writeable data directories
+- name: Create data directory
   ansible.builtin.file:
     path: "{{ influxdb_data_path }}"
     state: directory
-    owner: nobody
-    group: nogroup
-    mode: 0700
+    owner: influxdb
+    group: root
+    mode: 0700  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L71
 
-- name: Create writeable backup directories
+- name: Create backup directory
   ansible.builtin.file:
     path: "{{ influxdb_backup_path }}"
     state: directory
-    owner: nobody
-    group: nogroup
-    mode: 0755
+    owner: influxdb
+    group: root
+    mode: 0775
 
 - name: Define environment variables
   community.general.ini_file:

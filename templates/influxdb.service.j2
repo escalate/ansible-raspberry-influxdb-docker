@@ -24,7 +24,7 @@ ExecStart=/usr/bin/docker run \
 --network={{ influxdb_docker_network }} \
 --network-alias=influxdb \
 --publish=127.0.0.1:8086:8086 \
---user=nobody:nogroup \
+--user=10300:0 \
 influxdb:{{ influxdb_docker_image_version }}
 ExecStop=/usr/bin/docker stop %n
 SyslogIdentifier=%n

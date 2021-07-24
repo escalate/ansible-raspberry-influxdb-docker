@@ -1,28 +1,31 @@
 """Role testing files using testinfra"""
 
 
-def test_read_only_directories(host):
-    """Check read-only directories"""
+def test_config_directory(host):
+    """Check config directory"""
     f = host.file("/etc/influxdb")
     assert f.is_directory
-    assert f.user == "root"
+    assert f.user == "influxdb"
     assert f.group == "root"
-    assert f.mode == 0o755
+    assert f.mode == 0o775
 
 
-def test_writeable_directories(host):
-    """Check writeable directories"""
+def test_data_directory(host):
+    """Check data directory"""
     d = host.file("/var/lib/influxdb")
     assert d.is_directory
-    assert d.user == "nobody"
-    assert d.group == "nogroup"
+    assert d.user == "influxdb"
+    assert d.group == "root"
     assert d.mode == 0o700
 
+
+def test_backup_directory(host):
+    """Check backup directory"""
     b = host.file("/var/backups/influxdb")
     assert b.is_directory
-    assert b.user == "nobody"
-    assert b.group == "nogroup"
-    assert b.mode == 0o755
+    assert b.user == "influxdb"
+    assert b.group == "root"
+    assert b.mode == 0o775
 
 
 def test_influxdb_service(host):
