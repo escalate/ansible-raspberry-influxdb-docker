@@ -32,7 +32,7 @@
 
 - name: Define environment variables
   community.general.ini_file:
-    path: "{{ influxdb_etc_path }}/influxdb.env"
+    path: /etc/influxdb.env
     section: ""
     option: "{{ item.key }}"
     value: "{{ item.value }}"
@@ -45,7 +45,7 @@
 
 - name: Define Docker container labels
   community.general.ini_file:
-    path: "{{ influxdb_etc_path }}/influxdb.label"
+    path: /etc/influxdb.label
     section: ""
     option: "{{ item.key }}"
     value: "{{ item.value }}"
