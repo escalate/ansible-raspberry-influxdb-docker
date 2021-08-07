@@ -2,7 +2,7 @@
 
 # Ansible Role: Raspberry - InfluxDB (Docker)
 
-An Ansible role that manages [InfluxDB OSS](https://www.influxdata.com/products/influxdb/) Docker container with systemd on Raspberry Pi OS.
+An Ansible role that manages [InfluxDB](https://www.influxdata.com/products/influxdb/) Docker container with systemd on Raspberry Pi OS.
 
 ## Install
 
