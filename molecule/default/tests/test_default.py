@@ -49,6 +49,6 @@ def test_influxdb_docker_container(host):
 
 def test_backup_cron_job(host):
     """Check backup cron job"""
-    cmd = "/usr/local/bin/backup_influxdb.sh"
+    cmd = "/usr/local/bin/backup-influxdb.sh"
     f = host.file("/var/spool/cron/crontabs/root").content_string
     assert cmd in f

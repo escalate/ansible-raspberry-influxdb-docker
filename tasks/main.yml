@@ -144,8 +144,8 @@
 
 - name: Create backup script
   ansible.builtin.template:
-    src: backup_influxdb.sh.j2
-    dest: /usr/local/bin/backup_influxdb.sh
+    src: backup-influxdb.sh.j2
+    dest: /usr/local/bin/backup-influxdb.sh
     owner: root
     group: root
     mode: 0755
@@ -155,5 +155,5 @@
     name: Backup InfluxDB
     minute: "30"
     hour: "4"
-    job: "/usr/local/bin/backup_influxdb.sh || echo \"ERROR: A problem occurred during backup of InfluxDB. Please check the logfiles. journalctl -t backup_influxdb.sh\""  # noqa 204
+    job: "/usr/local/bin/backup-influxdb.sh || echo \"ERROR: A problem occurred during backup of InfluxDB. Please check the logfiles. journalctl -t backup-influxdb.sh\""  # noqa 204
     user: root
