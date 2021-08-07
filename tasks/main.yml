@@ -82,7 +82,7 @@
 
 - name: Wait for service to become available
   ansible.builtin.uri:
-    url: http://localhost:8086
+    url: http://localhost:8086/
   register: result
   until: result.status == 200
   retries: 60
