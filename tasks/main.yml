@@ -88,7 +88,7 @@
   retries: 60
   delay: 1
 
-- name: Configure service
+- name: Initialize service
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx setup \
