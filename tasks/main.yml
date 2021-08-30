@@ -105,42 +105,42 @@
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx user list \
-    --name '{{ item.name }}'
+    --json
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_users }}"
   register: influxdb_user_list
 
 - name: Create users
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx user create \
-    --name '{{ item.0.name }}' \
-    --password '{{ item.0.password }}' \
+    --name '{{ item.name }}' \
+    --password '{{ item.password }}' \
     --org '{{ influxdb_primary_organization_name }}'
-  when: item.1.rc != 0
-  loop: "{{ influxdb_users | zip(influxdb_user_list.results) | list }}"
+  when: item.name not in (influxdb_user_list.stdout | from_json | map(attribute='name'))
+  loop: "{{ influxdb_users }}"
+  no_log: true
 
 - name: List buckets
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx bucket list \
-    --name '{{ item.name }}'
+    --org '{{ influxdb_primary_organization_name }}' \
+    --json
   failed_when: false
   changed_when: false
-  loop: "{{ influxdb_buckets }}"
   register: influxdb_bucket_list
 
 - name: Create buckets
   ansible.builtin.command: |
     docker exec --interactive influxdb.service \
     influx bucket create \
-    --name '{{ item.0.name }}' \
-    --description '{{ item.0.description }}' \
+    --name '{{ item.name }}' \
+    --description '{{ item.description }}' \
     --org '{{ influxdb_primary_organization_name }}' \
-    --retention '{{ item.0.retention }}'
-  when: item.1.rc != 0
-  loop: "{{ influxdb_buckets | zip(influxdb_bucket_list.results) | list }}"
+    --retention '{{ item.retention }}'
+  when: item.name not in (influxdb_bucket_list.stdout | from_json | map(attribute='name'))
+  loop: "{{ influxdb_buckets }}"
 
 - name: Create backup script
   ansible.builtin.template:
