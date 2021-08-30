@@ -142,6 +142,25 @@
   when: item.name not in (influxdb_bucket_list.stdout | from_json | map(attribute='name'))
   loop: "{{ influxdb_buckets }}"
 
+- name: List authorizations
+  ansible.builtin.command: |
+    docker exec --interactive influxdb.service \
+    influx auth list \
+    --org '{{ influxdb_primary_organization_name }}' \
+    --json
+  failed_when: false
+  changed_when: false
+  register: influxdb_auth_list
+
+- name: Create authorizations
+  ansible.builtin.command: |
+    docker exec --interactive influxdb.service \
+    influx auth create \
+    --user '{{ item.user }}' \
+    --{{ item.permissions | join(' --') }}
+  when: item.user not in (influxdb_auth_list.stdout | from_json | map(attribute='userName'))
+  loop: "{{ influxdb_authorizations }}"
+
 - name: Create backup script
   ansible.builtin.template:
     src: backup-influxdb.sh.j2

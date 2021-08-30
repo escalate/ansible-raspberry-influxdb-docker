@@ -23,6 +23,11 @@
       - name: new-bucket
         description: A new bucket
         retention: 1h
+    influxdb_authorizations:
+      - user: user1
+        permissions:
+          - read-buckets
+          - write-buckets
   roles:
     - role: ansible-raspberry-influxdb-docker
       tags: influxdb
