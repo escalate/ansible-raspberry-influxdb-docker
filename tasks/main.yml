@@ -158,7 +158,7 @@
     docker exec --interactive influxdb.service \
     influx auth create \
     --user '{{ item.user }}' \
-    --description '{{ item.user }} Token' \
+    --description '{{ item.description }}' \
     --{{ item.permissions | join(' --') }}
   when: item.user not in (influxdb_auth_list.stdout | from_json | map(attribute='userName'))
   loop: "{{ influxdb_authorizations }}"

@@ -36,6 +36,7 @@ influxdb_buckets: []
 # https://docs.influxdata.com/influxdb/v2.0/security/tokens/create-token/
 influxdb_authorizations: []
   # - user: user1
+  #   description: user1 token with all permissions
   #   permissions:
   #     - read-buckets
   #     - read-checks
