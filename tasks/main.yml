@@ -150,6 +150,7 @@
     --json
   failed_when: false
   changed_when: false
+  no_log: true
   register: influxdb_auth_list
 
 - name: Create authorizations
@@ -160,6 +161,7 @@
     --{{ item.permissions | join(' --') }}
   when: item.user not in (influxdb_auth_list.stdout | from_json | map(attribute='userName'))
   loop: "{{ influxdb_authorizations }}"
+  no_log: true
 
 - name: Create backup script
   ansible.builtin.template:
