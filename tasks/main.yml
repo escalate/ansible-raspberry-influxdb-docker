@@ -31,29 +31,21 @@
     mode: 0775
 
 - name: Define environment variables
-  community.general.ini_file:
-    path: /etc/influxdb.env
-    section: ""
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
-    no_extra_spaces: true
+  ansible.builtin.template:
+    src: influxdb.env.j2
+    dest: /etc/influxdb.env
     owner: root
     group: root
     mode: 0644
-  loop: "{{ influxdb_env_vars | dict2items }}"
   notify: Restart influxdb service
 
 - name: Define Docker container labels
-  community.general.ini_file:
-    path: /etc/influxdb.label
-    section: ""
-    option: "{{ item.key }}"
-    value: "{{ item.value }}"
-    no_extra_spaces: true
+  ansible.builtin.template:
+    src: influxdb.label.j2
+    dest: /etc/influxdb.label
     owner: root
     group: root
     mode: 0644
-  loop: "{{ influxdb_docker_labels | dict2items }}"
   notify: Restart influxdb service
 
 - name: Pull Docker image
