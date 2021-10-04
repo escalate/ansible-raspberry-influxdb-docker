@@ -1,9 +1,9 @@
 #!/bin/bash
 set -e -E -u -C -o pipefail
 
-exec 1> >(logger -t $(basename $0)) 2>&1
+exec 1> >(logger --tag $(basename $0)) 2>&1
 
-echo "Start InfluxDB backup job"
+echo "Start InfluxDB backup"
 
 BACKUP_DIR="{{ influxdb_backup_path }}"
 
@@ -17,4 +17,4 @@ find "${BACKUP_DIR}" -name "*.manifest" -type f -exec bzip2 {} \;
 echo "Delete old InfluxDB database backups"
 find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +14 -delete
 
-echo "Finish InfluxDB backup job"
+echo "Finish InfluxDB backup"
