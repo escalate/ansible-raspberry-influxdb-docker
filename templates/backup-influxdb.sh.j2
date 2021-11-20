@@ -15,6 +15,6 @@ find "${BACKUP_DIR}" -name "*.bolt" -type f -exec bzip2 {} \;
 find "${BACKUP_DIR}" -name "*.manifest" -type f -exec bzip2 {} \;
 
 echo "Delete old InfluxDB database backups"
-find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +14 -delete
+find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +7 -delete
 
 echo "Finish InfluxDB backup"
