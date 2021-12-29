@@ -6,15 +6,14 @@ exec 1> >(logger --tag $(basename $0)) 2>&1
 echo "Start InfluxDB backup"
 
 BACKUP_DIR="{{ influxdb_backup_path }}"
+BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-db-$(date +%Y-%m-%d-%H-%M).tar"
 
-echo "Start backup of InfluxDB database"
-docker exec --interactive influxdb.service influx backup /var/backups/influxdb2
+echo "Create backup of InfluxDB database"
+docker exec --interactive influxdb.service influx backup /var/backups/influxdb2/influxdb-db-$(date +%Y-%m-%d-%H-%M)
+tar --create --file "${BACKUP_FILE}" --directory "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})/" .
+rm --recursive --force "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"
 
-echo "Compress backup of InfluxDB database"
-find "${BACKUP_DIR}" -name "*.bolt" -type f -exec bzip2 {} \;
-find "${BACKUP_DIR}" -name "*.manifest" -type f -exec bzip2 {} \;
-
-echo "Delete old InfluxDB database backups"
+echo "Delete InfluxDB backup archives older than 7 days"
 find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +7 -delete
 
 echo "Finish InfluxDB backup"
