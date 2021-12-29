@@ -14,7 +14,7 @@ influxdb_env_vars:
 # Replaces env var DOCKER_INFLUXDB_INIT_USERNAME
 influxdb_primary_user: admin
 # Replaces env var DOCKER_INFLUXDB_INIT_PASSWORD
-influxdb_primary_user_password: admin123
+influxdb_primary_user_password: admin
 # Replaces env var DOCKER_INFLUXDB_INIT_ORG
 influxdb_primary_organization_name: my-org
 # Replaces env var DOCKER_INFLUXDB_INIT_BUCKET
