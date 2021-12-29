@@ -7,7 +7,7 @@ influxdb_backup_path: /var/backups/influxdb
 influxdb_data_path: /var/lib/influxdb
 influxdb_etc_path: /etc/influxdb
 
-# https://docs.influxdata.com/influxdb/v2.1/reference/config-options/
+# https://docs.influxdata.com/influxdb/latest/reference/config-options/
 influxdb_env_vars:
   INFLUXD_REPORTING_DISABLED: "true"
 
@@ -22,18 +22,18 @@ influxdb_primary_bucket_name: my-bucket
 # Replaces env var DOCKER_INFLUXDB_INIT_RETENTION
 influxdb_primary_bucket_name_retention_period: 0
 
-# https://docs.influxdata.com/influxdb/v2.1/users/create-user/
+# https://docs.influxdata.com/influxdb/latest/users/create-user/
 influxdb_users: []
   # - name: user1
   #   password: pass1234
 
-# https://docs.influxdata.com/influxdb/v2.1/organizations/buckets/create-bucket/
+# https://docs.influxdata.com/influxdb/latest/organizations/buckets/create-bucket/
 influxdb_buckets: []
   # - name: new-bucket
   #   description: A new bucket
   #   retention: 1h
 
-# https://docs.influxdata.com/influxdb/v2.1/security/tokens/create-token/
+# https://docs.influxdata.com/influxdb/latest/security/tokens/create-token/
 influxdb_authorizations: []
   # - user: user1
   #   description: user1 token with all permissions
