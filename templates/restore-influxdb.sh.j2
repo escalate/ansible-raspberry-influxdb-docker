@@ -1,0 +1,70 @@
+#!/bin/bash
+set -e -E -u -C -o pipefail
+
+exec 1> >(logger --stderr --tag $(basename $0)) 2>&1
+
+if [[ "$EUID" -ne 0 ]] ; then echo "Please run as root" ; exit 1 ; fi
+
+echo "Start restore of InfluxDB"
+
+RESTORE_MARKER="/var/tmp/ALLOW_RESTORE_OF_INFLUXDB"
+
+if [ ! -f "${RESTORE_MARKER}" ]; then
+    echo "Run - touch ${RESTORE_MARKER} - to allow restore of InfluxDB"
+    exit 1
+fi
+
+BACKUP_DIR="{{ influxdb_backup_path }}"
+LAST_BACKUP_ARCHIVE="$(ls -t ${BACKUP_DIR}/influxdb-*.tar | head --lines 1)"
+LAST_BACKUP_DIR="${BACKUP_DIR}/$(basename --suffix .tar ${LAST_BACKUP_ARCHIVE})"
+echo "Selected InfluxDB backup archive: ${LAST_BACKUP_ARCHIVE}"
+
+echo "Stop InfluxDB service"
+systemctl stop influxdb.service
+
+while [ "$(docker ps --all --quiet --filter status=running --filter name=influxdb.service)" ]; do
+    echo "InfluxDB service is still running - wait 5 secs"
+    sleep 5
+done
+
+echo "Reset InfluxDB database"
+rm --recursive --force {{ influxdb_data_path }}/*
+rm --recursive --force {{ influxdb_etc_path }}/*
+
+echo "Start InfluxDB service"
+systemctl start influxdb.service
+
+while [ ! "$(docker ps --all --quiet --filter status=running --filter name=influxdb.service)" ]; do
+    echo "InfluxDB service is not running - wait 5 secs"
+    sleep 5
+done
+
+echo "Decompress backup archive of InfluxDB database"
+mkdir --parents "${LAST_BACKUP_DIR}"
+tar --extract --file "${LAST_BACKUP_ARCHIVE}" --directory "${LAST_BACKUP_DIR}"
+
+echo "Workaround: Create temp directory"
+# https://github.com/influxdata/influxdb/issues/22890
+docker exec --interactive influxdb.service \
+    mkdir --parents /var/lib/influxdb2/temp
+
+echo "Create primary user with old token"
+PRIMARY_USER_TOKEN=$(cat "${LAST_BACKUP_DIR}/auth.json" | python3 -c 'import json,sys;print(json.load(sys.stdin)[0]["token"])')
+docker exec --interactive influxdb.service \
+    influx setup \
+    --username '{{ influxdb_primary_user }}' \
+    --password '{{ influxdb_primary_user_password }}' \
+    --org '{{ influxdb_primary_organization_name }}' \
+    --bucket '{{ influxdb_primary_bucket_name }}' \
+    --retention '{{ influxdb_primary_bucket_name_retention_period }}' \
+    --token ${PRIMARY_USER_TOKEN} \
+    --force
+
+echo "Restore InfluxDB database"
+docker exec --interactive influxdb.service \
+    influx restore --full /var/backups/influxdb2/$(basename --suffix .tar ${LAST_BACKUP_ARCHIVE})
+
+echo "Remove restore marker"
+rm "${RESTORE_MARKER}"
+
+echo "Finish restore of InfluxDB"

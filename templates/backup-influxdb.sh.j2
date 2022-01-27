@@ -9,11 +9,14 @@ BACKUP_DIR="{{ influxdb_backup_path }}"
 BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-db-$(date +%Y-%m-%d-%H-%M).tar"
 
 echo "Create backup of InfluxDB database"
-docker exec --interactive influxdb.service influx backup /var/backups/influxdb2/influxdb-db-$(date +%Y-%m-%d-%H-%M)
+docker exec --interactive influxdb.service \
+    influx backup /var/backups/influxdb2/influxdb-db-$(date +%Y-%m-%d-%H-%M)
+docker exec --interactive influxdb.service \
+    influx auth list --org '{{ influxdb_primary_organization_name }}' --json > "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"/auth.json
 tar --create --file "${BACKUP_FILE}" --directory "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})/" .
 rm --recursive --force "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"
 
 echo "Delete InfluxDB backup archives older than 7 days"
-find "${BACKUP_DIR}" -name "*.bz2" -type f -mtime +7 -delete
+find "${BACKUP_DIR}" -name "*.tar" -type f -mtime +7 -delete
 
 echo "Finish InfluxDB backup"

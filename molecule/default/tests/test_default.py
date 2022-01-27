@@ -47,8 +47,19 @@ def test_influxdb_docker_container(host):
         "influxdb" in d["NetworkSettings"]["Networks"]["internal"]["Aliases"]
 
 
+def test_backup(host):
+    """Check if the backup runs successfully"""
+    cmd = host.run("/usr/local/bin/backup-influxdb.sh")
+    assert cmd.succeeded
+
+
 def test_backup_cron_job(host):
     """Check backup cron job"""
-    cmd = "/usr/local/bin/backup-influxdb.sh"
-    f = host.file("/var/spool/cron/crontabs/root").content_string
-    assert cmd in f
+    f = host.file("/var/spool/cron/crontabs/root")
+    assert "/usr/local/bin/backup-influxdb.sh" in f.content_string
+
+
+def test_restore(host):
+    """Check if the restore runs successfully"""
+    cmd = host.run("/usr/local/bin/restore-influxdb.sh")
+    assert cmd.succeeded

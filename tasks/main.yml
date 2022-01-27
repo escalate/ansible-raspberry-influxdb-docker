@@ -164,6 +164,15 @@
     group: root
     mode: 0755
 
+- name: Create restore script
+  ansible.builtin.template:
+    src: restore-influxdb.sh.j2
+    dest: /usr/local/bin/restore-influxdb.sh
+    owner: root
+    group: root
+    mode: 0755
+  no_log: true
+
 - name: Add backup cron job
   ansible.builtin.cron:
     name: Backup InfluxDB
