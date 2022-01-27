@@ -12,7 +12,7 @@
     influxdb_env_vars:
       INFLUXD_REPORTING_DISABLED: "true"
     influxdb_primary_user: admin
-    influxdb_primary_user_password: admin
+    influxdb_primary_user_password: influxdb
     influxdb_primary_organization_name: my-org
     influxdb_primary_bucket_name: my-bucket
     influxdb_primary_bucket_name_retention_period: 0
