@@ -8,6 +8,11 @@ echo "Start InfluxDB backup"
 BACKUP_DIR="{{ influxdb_backup_path }}"
 BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-db-$(date +%Y-%m-%d-%H-%M).tar"
 
+echo "Workaround: Create temp directory"
+# https://github.com/influxdata/influxdb/issues/22890
+docker exec --interactive influxdb.service \
+    mkdir --parents /var/lib/influxdb2/temp
+
 echo "Create backup of InfluxDB database"
 docker exec --interactive influxdb.service \
     influx backup /var/backups/influxdb2/influxdb-db-$(date +%Y-%m-%d-%H-%M)
