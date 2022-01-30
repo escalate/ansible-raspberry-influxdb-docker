@@ -6,7 +6,7 @@ exec 1> >(logger --tag $(basename $0)) 2>&1
 echo "Start InfluxDB backup"
 
 BACKUP_DIR="{{ influxdb_backup_path }}"
-BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-db-$(date +%Y-%m-%d-%H-%M).tar"
+BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-$(date +%Y-%m-%d-%H-%M).tar"
 
 echo "Workaround: Create temp directory"
 # https://github.com/influxdata/influxdb/issues/22890
@@ -15,7 +15,7 @@ docker exec --interactive influxdb.service \
 
 echo "Create backup of InfluxDB database"
 docker exec --interactive influxdb.service \
-    influx backup /var/backups/influxdb2/influxdb-db-$(date +%Y-%m-%d-%H-%M)
+    influx backup /var/backups/influxdb2/influxdb-$(date +%Y-%m-%d-%H-%M)
 docker exec --interactive influxdb.service \
     influx auth list --org '{{ influxdb_primary_organization_name }}' --json > "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"/auth.json
 tar --create --file "${BACKUP_FILE}" --directory "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})/" .
