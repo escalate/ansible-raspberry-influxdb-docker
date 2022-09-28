@@ -2,6 +2,7 @@ influxdb_docker_image_version: latest
 influxdb_docker_memory: 1G
 influxdb_docker_labels: {}
 influxdb_docker_network: bridge
+influxdb_docker_publish_ip_address: 127.0.0.1
 
 influxdb_backup_path: /var/backups/influxdb
 influxdb_data_path: /var/lib/influxdb
