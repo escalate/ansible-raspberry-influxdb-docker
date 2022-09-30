@@ -6,6 +6,8 @@
     influxdb_docker_labels:
       maintainer: me@example.com
     influxdb_docker_network: internal
+    influxdb_docker_publish_ports:
+      - 127.0.0.1:8086:8086
     influxdb_backup_path: /var/backups/influxdb
     influxdb_data_path: /var/lib/influxdb
     influxdb_etc_path: /etc/influxdb
