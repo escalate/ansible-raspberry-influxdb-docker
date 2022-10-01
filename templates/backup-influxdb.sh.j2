@@ -10,13 +10,13 @@ BACKUP_FILE="{{ influxdb_backup_path }}/influxdb-$(date +%Y-%m-%d-%H-%M).tar"
 
 echo "Workaround: Create temp directory"
 # https://github.com/influxdata/influxdb/issues/22890
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     mkdir --parents /var/lib/influxdb2/temp
 
 echo "Create backup of InfluxDB database"
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     influx backup /var/backups/influxdb2/influxdb-$(date +%Y-%m-%d-%H-%M)
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     influx auth list --org '{{ influxdb_primary_organization_name }}' --json > "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"/auth.json
 tar --create --file "${BACKUP_FILE}" --directory "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})/" .
 rm --recursive --force "${BACKUP_DIR}/$(basename --suffix .tar ${BACKUP_FILE})"

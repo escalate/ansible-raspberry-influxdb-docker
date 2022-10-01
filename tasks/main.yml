@@ -82,7 +82,7 @@
 
 - name: Initialize service
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx setup \
     --username '{{ influxdb_primary_user }}' \
     --password '{{ influxdb_primary_user_password }}' \
@@ -95,7 +95,7 @@
 
 - name: List users
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx user list \
     --json
   failed_when: false
@@ -104,7 +104,7 @@
 
 - name: Create users
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx user create \
     --name '{{ item.name }}' \
     --password '{{ item.password }}' \
@@ -115,7 +115,7 @@
 
 - name: List buckets
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx bucket list \
     --org '{{ influxdb_primary_organization_name }}' \
     --json
@@ -125,7 +125,7 @@
 
 - name: Create buckets
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx bucket create \
     --name '{{ item.name }}' \
     --description '{{ item.description }}' \
@@ -136,7 +136,7 @@
 
 - name: List authorizations
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx auth list \
     --org '{{ influxdb_primary_organization_name }}' \
     --json
@@ -147,7 +147,7 @@
 
 - name: Create authorizations
   ansible.builtin.command: |
-    docker exec --interactive influxdb.service \
+    docker exec --interactive influxdb \
     influx auth create \
     --user '{{ item.user }}' \
     --description '{{ item.description }}' \

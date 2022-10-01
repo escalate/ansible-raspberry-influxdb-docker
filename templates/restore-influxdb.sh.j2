@@ -20,9 +20,9 @@ LAST_BACKUP_DIR="${BACKUP_DIR}/$(basename --suffix .tar ${LAST_BACKUP_ARCHIVE})"
 echo "Selected InfluxDB backup archive: ${LAST_BACKUP_ARCHIVE}"
 
 echo "Stop InfluxDB service"
-systemctl stop influxdb.service
+systemctl stop influxdb
 
-while [ "$(docker ps --all --quiet --filter status=running --filter name=influxdb.service)" ]; do
+while [ "$(docker ps --all --quiet --filter status=running --filter name=influxdb)" ]; do
     echo "InfluxDB service is still running - wait 5 secs"
     sleep 5
 done
@@ -32,9 +32,9 @@ rm --recursive --force {{ influxdb_data_path }}/*
 rm --recursive --force {{ influxdb_etc_path }}/*
 
 echo "Start InfluxDB service"
-systemctl start influxdb.service
+systemctl start influxdb
 
-while [ ! "$(docker ps --all --quiet --filter status=running --filter name=influxdb.service)" ]; do
+while [ ! "$(docker ps --all --quiet --filter status=running --filter name=influxdb)" ]; do
     echo "InfluxDB service is not running - wait 5 secs"
     sleep 5
 done
@@ -45,12 +45,12 @@ tar --extract --file "${LAST_BACKUP_ARCHIVE}" --directory "${LAST_BACKUP_DIR}"
 
 echo "Workaround: Create temp directory"
 # https://github.com/influxdata/influxdb/issues/22890
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     mkdir --parents /var/lib/influxdb2/temp
 
 echo "Create primary user with old token"
 PRIMARY_USER_TOKEN=$(cat "${LAST_BACKUP_DIR}/auth.json" | python3 -c 'import json,sys;print(json.load(sys.stdin)[0]["token"])')
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     influx setup \
     --username '{{ influxdb_primary_user }}' \
     --password '{{ influxdb_primary_user_password }}' \
@@ -61,7 +61,7 @@ docker exec --interactive influxdb.service \
     --force
 
 echo "Restore InfluxDB database"
-docker exec --interactive influxdb.service \
+docker exec --interactive influxdb \
     influx restore --full /var/backups/influxdb2/$(basename --suffix .tar ${LAST_BACKUP_ARCHIVE})
 
 echo "Remove restore marker"

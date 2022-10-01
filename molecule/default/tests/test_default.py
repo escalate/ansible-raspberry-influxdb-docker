@@ -37,7 +37,7 @@ def test_influxdb_service(host):
 
 def test_influxdb_docker_container(host):
     """Check InfluxDB docker container"""
-    d = host.docker("influxdb.service").inspect()
+    d = host.docker("influxdb").inspect()
     assert d["HostConfig"]["Memory"] == 1073741824
     assert d["Config"]["Image"] == "influxdb:latest"
     assert d["Config"]["Labels"]["maintainer"] == "me@example.com"
