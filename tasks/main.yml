@@ -110,6 +110,7 @@
     --password '{{ item.password }}' \
     --org '{{ influxdb_primary_organization_name }}'
   when: item.name not in (influxdb_user_list.stdout | from_json | map(attribute='name'))
+  changed_when: false
   loop: "{{ influxdb_users }}"
   no_log: true
 
@@ -132,6 +133,7 @@
     --org '{{ influxdb_primary_organization_name }}' \
     --retention '{{ item.retention }}'
   when: item.name not in (influxdb_bucket_list.stdout | from_json | map(attribute='name'))
+  changed_when: false
   loop: "{{ influxdb_buckets }}"
 
 - name: List authorizations
@@ -153,6 +155,7 @@
     --description '{{ item.description }}' \
     --{{ item.permissions | join(' --') }}
   when: item.user not in (influxdb_auth_list.stdout | from_json | map(attribute='userName'))
+  changed_when: false
   loop: "{{ influxdb_authorizations }}"
   no_log: true
 
