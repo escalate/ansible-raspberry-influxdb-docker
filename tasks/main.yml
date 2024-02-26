@@ -62,10 +62,16 @@
     mode: 0644
   notify: Restart influxdb service
 
-- name: Start and enable service
+- name: Start service
   ansible.builtin.systemd:
     name: influxdb
     state: started
+    daemon_reload: true
+  register: influxdb_service_started
+
+- name: Enable service
+  ansible.builtin.systemd:
+    name: influxdb
     enabled: true
     daemon_reload: true
 

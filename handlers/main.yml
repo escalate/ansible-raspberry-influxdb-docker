@@ -3,3 +3,4 @@
     name: influxdb
     state: restarted
     daemon_reload: true
+  when: not influxdb_service_started.changed
