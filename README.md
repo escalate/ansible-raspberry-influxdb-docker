@@ -12,8 +12,8 @@ Please see [defaults/main.yml](https://github.com/escalate/ansible-raspberry-inf
 
 This role relies on the following dependencies:
 
-* Roles: [requirements.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/requirements.yml)
-* Collections: [requirements.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/requirements.yml)
+- Roles: [requirements.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/requirements.yml)
+- Collections: [requirements.yml](https://github.com/escalate/ansible-raspberry-influxdb-docker/blob/master/requirements.yml)
 
 ## Installation
 
