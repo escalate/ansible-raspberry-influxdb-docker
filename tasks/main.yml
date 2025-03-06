@@ -12,7 +12,7 @@
     state: directory
     owner: influxdb
     group: root
-    mode: 0775  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L74
+    mode: "0775"  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L74
 
 - name: Create data directory
   ansible.builtin.file:
@@ -20,7 +20,7 @@
     state: directory
     owner: influxdb
     group: root
-    mode: 0700  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L71
+    mode: "0700"  # https://github.com/influxdata/influxdata-docker/blob/master/influxdb/2.0/entrypoint.sh#L71
 
 - name: Create backup directory
   ansible.builtin.file:
@@ -28,7 +28,7 @@
     state: directory
     owner: influxdb
     group: root
-    mode: 0775
+    mode: "0775"
 
 - name: Define environment variables
   ansible.builtin.template:
@@ -36,7 +36,7 @@
     dest: /etc/influxdb.env
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart influxdb service
 
 - name: Define Docker container labels
@@ -45,7 +45,7 @@
     dest: /etc/influxdb.label
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart influxdb service
 
 - name: Pull Docker image
@@ -59,7 +59,7 @@
     dest: /etc/systemd/system/influxdb.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify: Restart influxdb service
 
 - name: Start service
@@ -171,7 +171,7 @@
     dest: /usr/local/bin/backup-influxdb.sh
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: Create restore script
   ansible.builtin.template:
@@ -179,7 +179,7 @@
     dest: /usr/local/bin/restore-influxdb.sh
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   no_log: true
 
 - name: Add backup cron job

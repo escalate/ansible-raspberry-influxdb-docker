@@ -43,8 +43,7 @@ def test_influxdb_docker_container(host):
     assert d["Config"]["Labels"]["maintainer"] == "me@example.com"
     assert "INFLUXD_REPORTING_DISABLED=true" in d["Config"]["Env"]
     assert "internal" in d["NetworkSettings"]["Networks"]
-    assert \
-        "influxdb" in d["NetworkSettings"]["Networks"]["internal"]["Aliases"]
+    assert "influxdb" in d["NetworkSettings"]["Networks"]["internal"]["Aliases"]
 
 
 def test_backup(host):
